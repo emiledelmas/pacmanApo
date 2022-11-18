@@ -15,6 +15,12 @@ import java.util.Random;
 import javafx.animation.AnimationTimer;
 //import ArcType
 import javafx.scene.shape.ArcType;
+//import KeyCode
+import javafx.scene.input.KeyCode;
+//import KeyEvent
+import javafx.scene.input.KeyEvent;
+//import getKeyEvent from getGraphicsContext2D
+import javafx.scene.input.KeyEvent;
 public class PacmanMain extends Application {
     GraphicsContext gc;
     @Override
@@ -51,23 +57,8 @@ public class PacmanMain extends Application {
                 //p.setY((int) e.getY());
             //});
         //handles key arrows on the keyboard
-        canvas.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case UP:
-                    p.setDirection(0);
-                    break;
-                case DOWN:
-                    p.setDirection(1);
-                    break;
-                case LEFT:
-                    p.setDirection(2);
-                    break;
-                case RIGHT:
-                    p.setDirection(3);
-                    break;
-            }
-        });
         //canvas.getGraphicsContext2D().fillOval(p.getX(), p.getY(), p.getSize(), p.getSize());
+
         final long startNanoTime = System.nanoTime();
 
         new AnimationTimer()
@@ -75,6 +66,7 @@ public class PacmanMain extends Application {
             public void handle(long currentNanoTime)
             {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+                //Declare e as the keyboard current key pressed
                 //Random rand = new Random();
                 //int randInt = rand.nextInt(500);
                 //p.setX(randInt);
@@ -85,27 +77,66 @@ public class PacmanMain extends Application {
                 //gc.fillOval(p.getX(), p.getY(), p.getSize(), p.getSize());
                 //draw ArcType.ROUND for pacman
                 if (p.getDirection() == 0){
-                    p.setY(p.getY() + p.getSpeed());
+                    if (p.getY()+p.getSpeed() > 470){
+                        //p.setY(485);
+                    }
+                    else{
+                        p.setY(p.getY()+p.getSpeed());
+                    }
+                    //p.setY(p.getY() + p.getSpeed());
+
                 }
                 else if (p.getDirection() == 1){
                     p.setY(p.getY() - p.getSpeed());
                 }
                 else if (p.getDirection() == 2){
-                    p.setX(p.getX() - p.getSpeed());
+                    if (p.getX() - p.getSpeed() < -15){
+                        p.setX(515);
+                    }
+                    else{
+                        p.setX(p.getX() - p.getSpeed());
+                    }
+                    //p.setX(p.getX() - p.getSpeed());
                 }
                 else if (p.getDirection() == 3){
                     p.setX(p.getX() + p.getSpeed());
                 }
                 //p.setX(p.getX() + 2);
                 //p.setY(p.getY() + 1);
-                System.out.println("HERE");
-                gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 0, 315 , ArcType.ROUND);
+                //System.out.println("HERE");
+                if (p.getDirection() == 3){
+                    gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 45, 280, ArcType.ROUND);
+                }
+                else if (p.getDirection() == 2){
+                    gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 225, 280, ArcType.ROUND);
+                }
+                else if (p.getDirection() == 0){
+                    gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 315, 280, ArcType.ROUND);
+                }
+                else if (p.getDirection() == 1){
+                    gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 135, 280, ArcType.ROUND);
+                }
+                //gc.fillArc(p.getX(), p.getY(), p.getSize(), p.getSize(), 0, 315 , ArcType.ROUND);
 
             }
         }.start();
         //Show the window
         root.getChildren().add(canvas);
         Scene scene = new Scene(root, 500, 500);
+        scene.setOnKeyPressed((KeyEvent event) -> { // Create a key event that execute when any key pressed from your keyboard
+            if (event.getCode() == KeyCode.UP) { // If the key pressed is the up arrow
+                p.setDirection(1);
+            }
+            else if (event.getCode() == KeyCode.DOWN) { // If the key pressed is the down arrow
+                p.setDirection(0);
+            }
+            else if (event.getCode() == KeyCode.LEFT) { // If the key pressed is the left arrow
+                p.setDirection(2);
+            }
+            else if (event.getCode() == KeyCode.RIGHT) { // If the key pressed is the right arrow
+                p.setDirection(3);
+            }
+        });
         //Scene scene = new Scene(canvas, 320, 240);
         stage.setTitle("Hello!");
         stage.setScene(scene);
